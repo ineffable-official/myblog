@@ -1,65 +1,46 @@
+import Article from "@/components/Article";
 import MainLayout from "@/components/MainLayout";
 import PostCard from "@/components/PostCard";
 import axios from "axios";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
-export default function App() {
-  const [latestPosts, setLatestPosts] = useState([]);
-  const [headPost, setHeadPost] = useState([]);
+export default function Single() {
+  const [post, setPost] = useState([]);
+  const router = useRouter();
+  const { slug } = router.query;
 
-  const getHeadPost = useCallback(() => {
+  const getPost = useCallback(() => {
+    if (!slug) {
+      return;
+    }
     axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          "/wp/v2/posts?per_page=1&orderBy=modified"
-      )
+      .get(process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts?slug=" + slug)
       .then((res) => {
-        setHeadPost(res.data);
+        setPost(res.data);
       })
       .catch((err) => {
         throw err;
       });
-  }, []);
-
-  const getLatestPosts = useCallback(() => {
-    axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          "/wp/v2/posts?per_page=6&orderBy=modified&offset=1"
-      )
-      .then((res) => {
-        setLatestPosts(res.data);
-      })
-      .catch((err) => {
-        throw err;
-      });
-  }, []);
+  }, [slug]);
 
   useEffect(() => {
-    getLatestPosts();
-    getHeadPost();
-  }, [getLatestPosts, getHeadPost]);
+    getPost();
+  }, [getPost]);
 
   return (
     <MainLayout>
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
         <div className="w-full h-auto col-span-9 ">
-          {headPost
-            ? headPost.map((p) => (
-                <PostCard data={p} key={p.id} headPost={true} />
-              ))
-            : ""}
-          <div className="grid grid-cols-3 gap-6 mt-8">
-            {latestPosts
-              ? latestPosts.map((p, i) => <PostCard data={p} key={p.id} />)
-              : ""}
-          </div>
+          {post ? post.map((p) => <Article post={p} key={p.id} />) : ""}
         </div>
         <div className="w-full h-12 col-span-3">
           <div className="w-full h-auto p-4 border-[1px]">
             <h1 className="font-semibold text-gray-600">Subscribe</h1>
             <form>
-              <h1 className="text-sm text-gray-400 py-1">Get notification every update</h1>
+              <h1 className="text-sm text-gray-400 py-1">
+                Get notification every update
+              </h1>
               <div className="flex">
                 <input
                   type="email"
