@@ -45,7 +45,7 @@ export default function Navbar() {
           <i className="fa-light fa-search"></i>
         </div>
         <Link
-          href="/"
+          href="/auth/login"
           className="py-2 px-4 bg-blue-500 rounded-lg font-medium text-sm hover:bg-blue-600 transition-all duration-150 ease-in-out"
         >
           LOGIN
@@ -53,7 +53,7 @@ export default function Navbar() {
       </div>
       {searchForm ? (
         <div className="w-screen h-screen fixed top-0 left-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center">
-          <form>
+          <form action="/search">
             <div className="flex">
               <input
                 type="search"

@@ -4,10 +4,13 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 
 export default function App() {
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   const [latestPosts, setLatestPosts] = useState([]);
   const [headPost, setHeadPost] = useState([]);
 
   const getHeadPost = useCallback(() => {
+    setLoading1(true);
     axios
       .get(
         process.env.NEXT_PUBLIC_API_URL +
@@ -15,6 +18,7 @@ export default function App() {
       )
       .then((res) => {
         setHeadPost(res.data);
+        setLoading1(false);
       })
       .catch((err) => {
         throw err;
@@ -22,6 +26,8 @@ export default function App() {
   }, []);
 
   const getLatestPosts = useCallback(() => {
+    setLoading1(true);
+
     axios
       .get(
         process.env.NEXT_PUBLIC_API_URL +
@@ -29,6 +35,7 @@ export default function App() {
       )
       .then((res) => {
         setLatestPosts(res.data);
+        setLoading1(false);
       })
       .catch((err) => {
         throw err;
@@ -44,22 +51,44 @@ export default function App() {
     <MainLayout>
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
         <div className="w-full h-auto col-span-9 ">
-          {headPost
-            ? headPost.map((p) => (
+          {!loading1 ? (
+            headPost ? (
+              headPost.map((p) => (
                 <PostCard data={p} key={p.id} headPost={true} />
               ))
-            : ""}
+            ) : (
+              ""
+            )
+          ) : (
+            <div className="w-full h-[300px] flex items-center justify-center">
+              <div className="w-8 h-8 flex items-center justify-center animate-spin">
+                <i className="fa-light fa-spinner"></i>
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-3 gap-6 mt-8">
-            {latestPosts
-              ? latestPosts.map((p, i) => <PostCard data={p} key={p.id} />)
-              : ""}
+            {!loading2 ? (
+              latestPosts ? (
+                latestPosts.map((p, i) => <PostCard data={p} key={p.id} />)
+              ) : (
+                ""
+              )
+            ) : (
+              <div className="w-full h-[300px] flex items-center justify-center">
+                <div className="w-8 h-8 flex items-center justify-center animate-spin">
+                  <i className="fa-light fa-spinner"></i>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full h-12 col-span-3">
           <div className="w-full h-auto p-4 border-[1px]">
-            <h1 className="font-semibold text-gray-600">Subscribe</h1>
+            <div className="font-semibold text-gray-600">Subscribe</div>
             <form>
-              <h1 className="text-sm text-gray-400 py-1">Get notification every update</h1>
+              <div className="text-sm text-gray-400 py-1">
+                Get notification every update
+              </div>
               <div className="flex">
                 <input
                   type="email"

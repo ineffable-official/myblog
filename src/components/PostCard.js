@@ -11,6 +11,9 @@ export default function PostCard(props) {
   const [authorLoading, setAuthorLoading] = useState(false);
 
   const getThumb = useCallback(() => {
+    if (!props.data.featured_media) {
+      return;
+    }
     setThumbLoading(true);
     axios
       .get(
@@ -54,26 +57,30 @@ export default function PostCard(props) {
   if (props.data)
     return (
       <div className="w-full h-auto">
-        <div
-          className="rounded-xl overflow-hidden flex items-center justify-center"
-          style={{ maxHeight: props.headPost ? "350px" : "auto" }}
-        >
-          {thumbLoading ? (
-            <div className="w-full h-[200px] bg-[rgba(0,0,0,0.1)] flex items-center justify-center">
-              <div className="w-8 h-8 flex items-center justify-center animate-spin">
-                <i className="fa-light fa-spinner"></i>
+        {props.data.featured_media ? (
+          <div
+            className="rounded-xl overflow-hidden flex items-center justify-center"
+            style={{ maxHeight: props.headPost ? "350px" : "auto" }}
+          >
+            {thumbLoading ? (
+              <div className="w-full h-[200px] bg-[rgba(0,0,0,0.1)] flex items-center justify-center">
+                <div className="w-8 h-8 flex items-center justify-center animate-spin">
+                  <i className="fa-light fa-spinner"></i>
+                </div>
               </div>
-            </div>
-          ) : (
-            <picture>
-              <img
-                src={thumb ? (thumb.guid ? thumb.guid.rendered : "") : ""}
-                className="w-full"
-                alt=""
-              />
-            </picture>
-          )}
-        </div>
+            ) : (
+              <picture>
+                <img
+                  src={thumb ? (thumb.guid ? thumb.guid.rendered : "") : ""}
+                  className="w-full"
+                  alt=""
+                />
+              </picture>
+            )}
+          </div>
+        ) : (
+          ""
+        )}
         <div className="py-2">
           <div className="flex flex-wrap py-2 gap-2">
             {props.data.categories

@@ -7,11 +7,13 @@ import { useCallback, useEffect, useState } from "react";
 export default function Search() {
   const router = useRouter();
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getPosts = useCallback(() => {
     if (!router.query.q) {
       return;
     }
+    setLoading(true);
     axios
       .get(
         process.env.NEXT_PUBLIC_API_URL +
@@ -20,6 +22,7 @@ export default function Search() {
       )
       .then((res) => {
         setPosts(res.data);
+        setLoading(false);
       })
       .catch((err) => {
         throw err;
@@ -35,16 +38,28 @@ export default function Search() {
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
         <div className="w-full h-auto col-span-9 ">
           <div className="grid grid-cols-3 gap-6 mt-8">
-            {posts ? posts.map((p, i) => <PostCard data={p} key={p.id} />) : ""}
+            {!loading ? (
+              posts ? (
+                posts.map((p, i) => <PostCard data={p} key={p.id} />)
+              ) : (
+                "NOT FOUND"
+              )
+            ) : (
+              <div className="w-full h-[300px] flex items-center justify-center">
+                <div className="w-8 h-8 flex items-center justify-center animate-spin">
+                  <i className="fa-light fa-spinner"></i>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full h-12 col-span-3">
           <div className="w-full h-auto p-4 border-[1px]">
-            <h1 className="font-semibold text-gray-600">Subscribe</h1>
+            <div className="font-semibold text-gray-600">Subscribe</div>
             <form>
-              <h1 className="text-sm text-gray-400 py-1">
+              <div className="text-sm text-gray-400 py-1">
                 Get notification every update
-              </h1>
+              </div>
               <div className="flex">
                 <input
                   type="email"

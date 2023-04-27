@@ -5,30 +5,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
-export default function Single() {
-  const [post, setPost] = useState([]);
-  const router = useRouter();
-  const { slug } = router.query;
-
-  const getPost = useCallback(() => {
-    if (!slug) {
-      return;
-    }
-    axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts?slug=" + slug)
-      .then((res) => {
-        setPost(res.data);
-      })
-      .catch((err) => {
-        throw err;
-      });
-  }, [slug]);
-
-  useEffect(() => {
-    getPost();
-  }, [getPost]);
-
-  return (
+function Single({post}) {
+   return (
     <MainLayout>
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
         <div className="w-full h-auto col-span-9 ">
@@ -36,11 +14,11 @@ export default function Single() {
         </div>
         <div className="w-full h-12 col-span-3">
           <div className="w-full h-auto p-4 border-[1px]">
-            <h1 className="font-semibold text-gray-600">Subscribe</h1>
+            <div className="font-semibold text-gray-600">Subscribe</div>
             <form>
-              <h1 className="text-sm text-gray-400 py-1">
+              <div className="text-sm text-gray-400 py-1">
                 Get notification every update
-              </h1>
+              </div>
               <div className="flex">
                 <input
                   type="email"
@@ -63,3 +41,23 @@ export default function Single() {
     </MainLayout>
   );
 }
+
+export async function getStaticPaths() {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts");
+  const posts = await res.json();
+
+  const paths = posts.map((post) => ({ params: { slug: post.slug } }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL +
+    "/wp/v2/posts?slug=" +
+    params.slug);
+  const post = await res.json();
+
+  return { props: { post } };
+}
+
+export default Single;

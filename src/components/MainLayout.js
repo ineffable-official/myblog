@@ -10,12 +10,13 @@ const poppins = Poppins({
 export default function MainLayout({ children }) {
   return (
     <>
-      <div className={poppins.className}>
-        <div className="w-screen h-screen overflow-y-scroll">
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-        </div>
+      <div
+        className="w-screen h-screen overflow-y-scroll"
+        style={poppins.style}
+      >
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
       </div>
     </>
   );
