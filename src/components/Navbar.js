@@ -2,12 +2,75 @@ import Link from "next/link";
 
 import Logo from "./logo.svg";
 import Image from "next/image";
-import { useState } from "react";
-import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
+import { Router, useRouter } from "next/router";
+import axios from "axios";
 
 export default function Navbar() {
   const [searchForm, setSearchForm] = useState(false);
+  const [user, setUser] = useState();
+  const [loadUser, setLoadUser] = useState(false);
   const router = useRouter();
+
+  const validateCookie = useCallback(() => {
+    setLoadUser(true);
+    const cookie = localStorage.getItem("cookie");
+    const userID = localStorage.getItem("user_id");
+    const userData = localStorage.getItem("user");
+
+    if (cookie !== null) {
+      axios
+        .get(
+          process.env.NEXT_PUBLIC_BASE_API +
+            "/api/user/validate_auth_cookie/?cookie=" +
+            cookie
+        )
+        .then((res) => {
+          if (res.data.status !== "ok") {
+            setLoadUser(false);
+            return;
+          }
+
+          if (res.data.valid && userID !== null && user === null) {
+            axios
+              .get(
+                process.env.NEXT_PUBLIC_BASE_API +
+                  "/api/user/get_userinfo/?user_id=" +
+                  userID
+              )
+              .then((res2) => {
+                setUser(res2.data);
+                setLoadUser(false);
+              })
+              .catch((err) => {
+                throw err;
+              });
+          } else {
+            setUser(JSON.parse(userData));
+            setLoadUser(false);
+          }
+        })
+        .catch((err) => {
+          throw err;
+        });
+    } else {
+      setLoadUser(false);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("cookie");
+    localStorage.removeItem("cookie_admin");
+    localStorage.removeItem("cookie_name");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("username");
+
+    window.location.reload(false);
+  };
+
+  useEffect(() => {
+    validateCookie();
+  }, [validateCookie]);
 
   return (
     <div className="w-full h-[96px] px-8 bg-red-400 flex items-center navbar-bg text-white">
@@ -44,12 +107,43 @@ export default function Navbar() {
         >
           <i className="fa-light fa-search"></i>
         </div>
-        <Link
-          href="/auth/login"
-          className="py-2 px-4 bg-blue-500 rounded-lg font-medium text-sm hover:bg-blue-600 transition-all duration-150 ease-in-out"
-        >
-          LOGIN
-        </Link>
+        {!loadUser ? (
+          !user ? (
+            <Link
+              href="/auth/login"
+              className="py-2 px-4 bg-blue-500 rounded-lg font-medium text-sm hover:bg-blue-600 transition-all duration-150 ease-in-out"
+            >
+              LOGIN
+            </Link>
+          ) : (
+            <div className="flex gap-2 items-center">
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-full overflow-hidden"
+                onClick={(e) => setSearchForm(!searchForm)}
+              >
+                <picture>
+                  <img
+                    src="https://secure.gravatar.com/avatar/e5d559aa821d4d66798a76007effd1d9?s=96&d=mm&r=g"
+                    alt=""
+                  />
+                </picture>
+              </div>
+              <div className="font-medium text-sm ">{user.displayname}</div>
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[rgba(255,255,255,0.1)]"
+                onClick={handleLogout}
+              >
+                <i className="fa-light fa-arrow-right-from-bracket"></i>
+              </div>
+            </div>
+          )
+        ) : (
+          <div className="w-[100px] h-8 bg-[rgba(255,255,255,0.1)] flex items-center justify-center rounded-xl">
+            <div className="w-8 h-8 flex items-center justify-center animate-spin">
+              <i className="fa-light fa-spinner"></i>
+            </div>
+          </div>
+        )}
       </div>
       {searchForm ? (
         <div className="w-screen h-screen fixed top-0 left-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center">

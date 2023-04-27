@@ -15,7 +15,7 @@ export default function CommentCard({ comment }) {
           </div>
           <div className="text-sm text-[rgba(0,0,0,0.7)]">{comment.author_name}</div>
         </div>
-        <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500">
+        {/* <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500">
           <div className="flex gap-2 items-center">
             <div className="w-8 h-8 flex items-center justify-center">
               <i className="fa-light fa-heart"></i>
@@ -28,14 +28,14 @@ export default function CommentCard({ comment }) {
             </div>
             <div className="text-xs">53.000rb</div>
           </div>
-        </div>
-        <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500">
+        </div> */}
+        {/* <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500">
           <div className="flex gap-2 items-center">
             <div className="w-8 h-8 flex items-center justify-center">
               <i className="fa-light fa-reply"></i>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
