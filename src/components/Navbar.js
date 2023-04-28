@@ -13,6 +13,7 @@ export default function Navbar() {
   const [menus, setMenus] = useState([]);
   const [loadMenus, setLoadMenus] = useState(false);
   const router = useRouter();
+  const [mobileMenus, setMobileMenus] = useState(false);
 
   const validateCookie = useCallback(() => {
     setLoadUser(true);
@@ -67,7 +68,7 @@ export default function Navbar() {
     localStorage.removeItem("user_id");
     localStorage.removeItem("username");
 
-    router.push("/auth/login")
+    router.push("/auth/login");
   };
 
   const getMenus = useCallback(() => {
@@ -86,7 +87,7 @@ export default function Navbar() {
 
   return (
     <div className="w-full h-[96px] px-8 bg-red-400 flex items-center navbar-bg text-white">
-      <div className="h-12 px-2 flex items-center">
+      <div className="h-12 px-2 flex items-center mr-auto">
         <Image
           priority
           src={Logo}
@@ -95,7 +96,7 @@ export default function Navbar() {
           style={{ stroke: "#fff", fill: "#fff" }}
         />
       </div>
-      <ul className="mx-auto text-sm text-center">
+      <ul className="text-sm text-center hidden md:block">
         {!loadMenus ? (
           menus ? (
             menus.map((m) => (
@@ -117,7 +118,7 @@ export default function Navbar() {
           </div>
         )}
       </ul>
-      <div className="flex gap-2">
+      <div className="flex gap-2 ml-auto">
         <div
           className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[rgba(255,255,255,0.1)]"
           onClick={(e) => setSearchForm(!searchForm)}
@@ -134,9 +135,7 @@ export default function Navbar() {
             </Link>
           ) : (
             <div className="flex gap-2 items-center">
-              <div
-                className="w-8 h-8 flex items-center justify-center rounded-full overflow-hidden"
-              >
+              <div className="w-8 h-8 flex items-center justify-center rounded-full overflow-hidden">
                 <picture>
                   <img
                     src="https://secure.gravatar.com/avatar/e5d559aa821d4d66798a76007effd1d9?s=96&d=mm&r=g"
@@ -160,6 +159,12 @@ export default function Navbar() {
             </div>
           </div>
         )}
+        <div
+          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[rgba(255,255,255,0.1)] md:hidden"
+          onClick={() => setMobileMenus(!mobileMenus)}
+        >
+          <i className="fa-light fa-bars"></i>
+        </div>
       </div>
       {searchForm ? (
         <div className="w-screen h-screen fixed top-0 left-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center">
@@ -170,22 +175,56 @@ export default function Navbar() {
                 name="q"
                 id="search"
                 placeholder="Search..."
-                className="h-[72px] text-6xl bg-transparent font-medium outline-none"
+                className="md:h-[72px] md:text-6xl bg-transparent font-medium outline-none"
               />
               <button
                 type="submit"
-                className="w-[72px] h-[72px] flex items-center justify-center text-4xl"
+                className="md:file:w-[72px] h-[72px] flex items-center justify-center md:text-4xl"
               >
                 <i className="fa-light fa-search"></i>
               </button>
               <div
-                className="w-[72px] h-[72px] flex items-center justify-center text-4xl"
+                className="w-[72px] md:h-[72px] flex items-center justify-center md:text-4xl"
                 onClick={(e) => setSearchForm(!searchForm)}
               >
                 <i className="fa-light fa-x"></i>
               </div>
             </div>
           </form>
+        </div>
+      ) : (
+        ""
+      )}
+      {mobileMenus ? (
+        <div className="w-screen h-screen fixed top-0 left-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center flex-col">
+          <ul className="mx-auto text-sm text-center flex flex-col gap-2">
+            {!loadMenus ? (
+              menus ? (
+                menus.map((m) => (
+                  <li
+                    className="inline-block px-3 py-2 hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out"
+                    key={m.ID}
+                  >
+                    <Link href={m.url}>{m.title}</Link>
+                  </li>
+                ))
+              ) : (
+                ""
+              )
+            ) : (
+              <div className="w-24 h-8 bg-[rgba(255,255,255,0.1)] rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 flex items-center justify-center animate-spin">
+                  <i className="fa-light fa-spinner"></i>
+                </div>
+              </div>
+            )}
+          </ul>
+          <div
+            className="w-12 h-12 flex items-center justify-center hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer"
+            onClick={(e) => setMobileMenus(!mobileMenus)}
+          >
+            <i className="fa-light fa-x"></i>
+          </div>
         </div>
       ) : (
         ""

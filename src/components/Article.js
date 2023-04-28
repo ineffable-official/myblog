@@ -112,7 +112,6 @@ export default function Article({ post }) {
           <div className="w-6 h-6 flex items-center justify-center text-white">
             <i className="fa-brands fa-facebook"></i>
           </div>
-          <div className="text-white">Facebook</div>
         </Link>
         <Link
           href={
@@ -124,7 +123,6 @@ export default function Article({ post }) {
           <div className="w-6 h-6 flex items-center justify-center text-white">
             <i className="fa-brands fa-whatsapp"></i>
           </div>
-          <div className="text-white">Whatsapp</div>
         </Link>
         <Link
           href={
@@ -136,7 +134,6 @@ export default function Article({ post }) {
           <div className="w-6 h-6 flex items-center justify-center text-white">
             <i className="fa-brands fa-twitter"></i>
           </div>
-          <div className="text-white">Twitter</div>
         </Link>
       </div>
       {post.featured_media ? (

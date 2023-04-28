@@ -112,7 +112,7 @@ export default function Comments({ postID }) {
     } else {
       setLoadUser(false);
     }
-  }, []);
+  }, [user]);
 
   const postComment = (e) => {
     e.preventDefault();

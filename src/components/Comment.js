@@ -1,4 +1,5 @@
 import axios from "axios";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 export default function Comment({ comment, user, getComments, loadChilds }) {
@@ -9,6 +10,9 @@ export default function Comment({ comment, user, getComments, loadChilds }) {
     e.preventDefault();
 
     const form = new FormData(e.target);
+    if (!user) {
+      return;
+    }
 
     const data = {
       post: comment.post,
@@ -49,20 +53,6 @@ export default function Comment({ comment, user, getComments, loadChilds }) {
             {comment.author_name}
           </div>
         </div>
-        {/* <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500">
-      <div className="flex gap-2 items-center">
-        <div className="w-8 h-8 flex items-center justify-center">
-          <i className="fa-light fa-heart"></i>
-        </div>
-        <div className="text-xs">10.000rb</div>
-      </div>
-      <div className="flex gap-2 items-center">
-        <div className="w-8 h-8 flex items-center justify-center">
-          <i className="fa-light fa-comment"></i>
-        </div>
-        <div className="text-xs">53.000rb</div>
-      </div>
-    </div> */}
         <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500 ">
           <div
             className="flex gap-2 items-center hover:bg-[rgba(0,0,0,0.1)] rounded-lg cursor-pointer"
@@ -76,23 +66,29 @@ export default function Comment({ comment, user, getComments, loadChilds }) {
       </div>
       {replyForm ? (
         <div className="border-t-[1px]">
-          <form onSubmit={handleReply}>
-            <textarea
-              name="reply_content"
-              id="reply_content"
-              placeholder="Type your comments..."
-              className="w-full p-4 outline-none"
-              ref={replyFormRef}
-            ></textarea>
-            <div className="w-full border-t-[1px] flex text-gray-500">
-              <button
-                type="submit"
-                className="w-10 h-10 flex items-center justify-center border-r-[1px] hover:bg-[rgba(0,0,0,0.05)]"
-              >
-                <i className="fa-light fa-send"></i>
-              </button>
+          {user ? (
+            <form onSubmit={handleReply}>
+              <textarea
+                name="reply_content"
+                id="reply_content"
+                placeholder="Type your comments..."
+                className="w-full p-4 outline-none"
+                ref={replyFormRef}
+              ></textarea>
+              <div className="w-full border-t-[1px] flex text-gray-500">
+                <button
+                  type="submit"
+                  className="w-10 h-10 flex items-center justify-center border-r-[1px] hover:bg-[rgba(0,0,0,0.05)]"
+                >
+                  <i className="fa-light fa-send"></i>
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="w-fit py-2 text-white px-4 bg-blue-500 font-medium text-sm hover:bg-blue-600 transition-all duration-150 ease-in-out">
+              <Link href="/auth/login">LOGIN</Link>
             </div>
-          </form>
+          )}
         </div>
       ) : (
         ""

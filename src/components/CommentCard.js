@@ -17,7 +17,7 @@ export default function CommentCard({ user, comment, getComments, parentID }) {
       .catch((err) => {
         throw err;
       });
-  }, []);
+  }, [comment.id]);
 
   useEffect(() => {
     loadChilds();
@@ -25,7 +25,7 @@ export default function CommentCard({ user, comment, getComments, parentID }) {
 
   return (
     <div className="flex flex-col mt-4">
-      <Comment comment={comment} user={user} getComments={getComments} isParent={true} loadChilds={loadChilds()}/>
+      <Comment comment={comment} user={user} getComments={getComments} isParent={true} loadChilds={loadChilds}/>
       {childShow ? (
         <div className="w-fit border-[1px] p-2 mt-2 flex items-center">
           <div className="h-8 px-2 flex items-center text-gray-500">

@@ -51,7 +51,7 @@ export default function App() {
   return (
     <MainLayout>
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
-        <div className="w-full h-auto col-span-9 ">
+        <div className="w-full h-auto col-span-12 md:col-span-9">
           {!loading1 ? (
             headPost ? (
               headPost.map((p) => (
@@ -67,7 +67,7 @@ export default function App() {
               </div>
             </div>
           )}
-          <div className="grid grid-cols-3 gap-6 mt-8">
+          <div className="grid md:grid-cols-3 grid-cols-2 gap-6 mt-8">
             {!loading2 ? (
               latestPosts ? (
                 latestPosts.map((p, i) => <PostCard data={p} key={p.id} />)
@@ -83,7 +83,7 @@ export default function App() {
             )}
           </div>
         </div>
-        <div className="w-full h-12 col-span-3">
+        <div className="w-full h-12 ml:col-span-3 lg:col-span-3 col-span-12">
           <Newsletter/>
         </div>
       </div>
