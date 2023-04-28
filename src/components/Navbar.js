@@ -10,6 +10,8 @@ export default function Navbar() {
   const [searchForm, setSearchForm] = useState(false);
   const [user, setUser] = useState();
   const [loadUser, setLoadUser] = useState(false);
+  const [menus, setMenus] = useState([]);
+  const [loadMenus, setLoadMenus] = useState(false);
   const router = useRouter();
 
   const validateCookie = useCallback(() => {
@@ -65,12 +67,22 @@ export default function Navbar() {
     localStorage.removeItem("user_id");
     localStorage.removeItem("username");
 
-    window.location.reload(false);
+    router.push("/auth/login")
   };
+
+  const getMenus = useCallback(() => {
+    axios
+      .get(process.env.NEXT_PUBLIC_BASE_API + "/api/get_menu?name=Main Menus")
+      .then((res) => setMenus(res.data.menu))
+      .catch((err) => {
+        throw err;
+      });
+  }, []);
 
   useEffect(() => {
     validateCookie();
-  }, [validateCookie]);
+    getMenus();
+  }, [validateCookie, getMenus]);
 
   return (
     <div className="w-full h-[96px] px-8 bg-red-400 flex items-center navbar-bg text-white">
@@ -83,22 +95,27 @@ export default function Navbar() {
           style={{ stroke: "#fff", fill: "#fff" }}
         />
       </div>
-      <ul className="mx-auto text-sm">
-        <li className="inline-block px-3 py-2 hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out">
-          <Link href="/">Home</Link>
-        </li>
-        <li className="inline-block px-3 py-2 hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out">
-          Trendings
-        </li>
-        <li className="inline-block px-3 py-2 hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out">
-          Categories
-        </li>
-        <li className="inline-block px-3 py-2 hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out">
-          Contacts
-        </li>
-        <li className="inline-block px-3 py-2 hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out">
-          Abouts
-        </li>
+      <ul className="mx-auto text-sm text-center">
+        {!loadMenus ? (
+          menus ? (
+            menus.map((m) => (
+              <li
+                className="inline-block px-3 py-2 hover:bg-[rgba(255,255,255,0.1)] hover:text-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out"
+                key={m.ID}
+              >
+                <Link href={m.url}>{m.title}</Link>
+              </li>
+            ))
+          ) : (
+            ""
+          )
+        ) : (
+          <div className="w-24 h-8 bg-[rgba(255,255,255,0.1)] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 flex items-center justify-center animate-spin">
+              <i className="fa-light fa-spinner"></i>
+            </div>
+          </div>
+        )}
       </ul>
       <div className="flex gap-2">
         <div
@@ -119,7 +136,6 @@ export default function Navbar() {
             <div className="flex gap-2 items-center">
               <div
                 className="w-8 h-8 flex items-center justify-center rounded-full overflow-hidden"
-                onClick={(e) => setSearchForm(!searchForm)}
               >
                 <picture>
                   <img

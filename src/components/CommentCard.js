@@ -1,42 +1,74 @@
-export default function CommentCard({ comment }) {
+import axios from "axios";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Comment from "./Comment";
+
+export default function CommentCard({ user, comment, getComments, parentID }) {
+  const [childs, setChilds] = useState([]);
+  const [childShow, setChildShow] = useState(false);
+
+  const loadChilds = useCallback(() => {
+    axios
+      .get(
+        process.env.NEXT_PUBLIC_API_URL + "/wp/v2/comments?parent=" + comment.id
+      )
+      .then((res) => {
+        setChilds(res.data);
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }, []);
+
+  useEffect(() => {
+    loadChilds();
+  }, [loadChilds]);
+
   return (
-    <div className="w-full h-auto border-[1px]">
-      <div className="p-8">
-        <div className="text-sm"
-          dangerouslySetInnerHTML={{ __html: comment.content.rendered }}
-        ></div>
-      </div>
-      <div className="w-full border-t-[1px] flex">
-        <div className="w-fit flex gap-2 py-2 items-center border-r-[1px] p-2">
-          <div className="w-8 h-8 rounded-full overflow-hidden">
-            <picture>
-              <img src={comment.author_avatar_urls["96"]} alt="" />
-            </picture>
+    <div className="flex flex-col mt-4">
+      <Comment comment={comment} user={user} getComments={getComments} isParent={true} loadChilds={loadChilds()}/>
+      {childShow ? (
+        <div className="w-fit border-[1px] p-2 mt-2 flex items-center">
+          <div className="h-8 px-2 flex items-center text-gray-500">
+            {childs.length} Replies
           </div>
-          <div className="text-sm text-[rgba(0,0,0,0.7)]">{comment.author_name}</div>
+          <div
+            className="w-8 h-8 flex items-center justify-center hover:bg-[rgba(0,0,0,0.1)] rounded-lg cursor-pointer"
+            onClick={() => setChildShow(false)}
+          >
+            <i className="fa-light fa-arrow-up"></i>
+          </div>
         </div>
-        {/* <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500">
-          <div className="flex gap-2 items-center">
-            <div className="w-8 h-8 flex items-center justify-center">
-              <i className="fa-light fa-heart"></i>
-            </div>
-            <div className="text-xs">10.000rb</div>
+      ) : (
+        <div className="w-fit border-[1px] p-2 mt-2 flex items-center">
+          <div className="h-8 px-2 flex items-center text-gray-500">
+          {childs.length} Replies
           </div>
-          <div className="flex gap-2 items-center">
-            <div className="w-8 h-8 flex items-center justify-center">
-              <i className="fa-light fa-comment"></i>
-            </div>
-            <div className="text-xs">53.000rb</div>
+          <div
+            className="w-8 h-8 flex items-center justify-center hover:bg-[rgba(0,0,0,0.1)] rounded-lg cursor-pointer"
+            onClick={() => setChildShow(true)}
+          >
+            <i className="fa-light fa-arrow-down"></i>
           </div>
-        </div> */}
-        {/* <div className="w-fit flex items-center justify-center p-2 gap-2 border-r-[1px] text-gray-500">
-          <div className="flex gap-2 items-center">
-            <div className="w-8 h-8 flex items-center justify-center">
-              <i className="fa-light fa-reply"></i>
-            </div>
-          </div>
-        </div> */}
-      </div>
+        </div>
+      )}
+
+      {childShow ? (
+        <div className="mt-4 flex flex-col">
+          {childs
+            ? childs.map((c) => (
+                <div className="ml-8" key={c.id}>
+                  <CommentCard
+                    comment={c}
+                    user={user}
+                    getComments={getComments}
+                  />
+                </div>
+              ))
+            : ""}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

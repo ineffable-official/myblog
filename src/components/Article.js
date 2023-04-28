@@ -104,7 +104,7 @@ export default function Article({ post }) {
       <div className="flex gap-2 py-2 text-sm">
         <Link
           href={
-            "https://www.facebook.com/sharer/sharer.php?u=http://nimetoon.my.id/post/" +
+            "https://www.facebook.com/sharer/sharer.php?u=https://nimetoon.my.id/post/" +
             post.slug
           }
           className="py-2 px-4 bg-blue-500 hover:bg-blue-600 flex items-center gap-2 rounded-lg"
@@ -116,7 +116,7 @@ export default function Article({ post }) {
         </Link>
         <Link
           href={
-            "https://web.whatsapp.com/send?text=http://nimetoon.my.id/post/" +
+            "https://web.whatsapp.com/send?text=https://nimetoon.my.id/post/" +
             post.slug
           }
           className="py-2 px-4 bg-green-500 hover:bg-green-600 flex items-center gap-2 rounded-lg"
@@ -128,7 +128,7 @@ export default function Article({ post }) {
         </Link>
         <Link
           href={
-            "https://twitter.com/intent/tweet?text=&url=http://nimetoon.my.id/post/" +
+            "https://twitter.com/intent/tweet?text=&url=https://nimetoon.my.id/post/" +
             post.slug
           }
           className="py-2 px-4 bg-blue-500 hover:bg-blue-600 flex items-center gap-2 rounded-lg"

@@ -5,8 +5,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
-function Single({post}) {
-   return (
+function Single({ post }) {
+  return (
     <MainLayout>
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
         <div className="w-full h-auto col-span-9 ">
@@ -43,19 +43,19 @@ function Single({post}) {
 }
 
 export async function getStaticPaths() {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts");
-  const posts = await res.json();
+  const res = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts");
 
-  const paths = posts.map((post) => ({ params: { slug: post.slug } }));
+  const paths = res.data.map((post) => ({ params: { slug: post.slug } }));
 
   return { paths, fallback: false };
 }
 
 export async function getStaticProps({ params }) {
-  const res = await fetch(process.env.NEXT_PUBLIC_API_URL +
-    "/wp/v2/posts?slug=" +
-    params.slug);
-  const post = await res.json();
+  const res = await axios(
+    process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts?slug=" + params.slug
+  );
+
+  const post = res.data;
 
   return { props: { post } };
 }

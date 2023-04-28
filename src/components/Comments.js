@@ -26,31 +26,43 @@ export default function Comments({ postID }) {
       }
     });
 
+    {
+      /* <div className="flex flex-col gap-4 mt-4 ml-16">
+      {filterChildren(comments, c.id)
+        ? filterChildren(comments, c.id).map((child) => (
+            <CommentCard
+              user={user}
+              comment={child}
+              getComments={getComments}
+              parentID={c.id}
+              key={child.id}
+            />
+          ))
+        : ""}
+    </div> */
+    }
+
     return c_new.map((c) => (
-      <div className="flex flex-col" key={c.id}>
-        <CommentCard comment={c} />
-        <div className="flex flex-col gap-4 mt-4 ml-16">
-          {filterChildren(comments, c.id)
-            ? filterChildren(comments, c.id).map((child) => (
-                <CommentCard comment={child} key={child.id} />
-              ))
-            : ""}
-        </div>
-      </div>
+      <CommentCard
+        user={user}
+        comment={c}
+        getComments={getComments}
+        key={c.id}
+      />
     ));
   };
 
-  const filterChildren = (c, parentID) => {
-    const c_child = [];
+  // const filterChildren = (c, parentID) => {
+  //   const c_child = [];
 
-    c.forEach((c) => {
-      if (c.parent === parentID) {
-        c_child.push(c);
-      }
-    });
+  //   c.forEach((c) => {
+  //     if (c.parent === parentID) {
+  //       c_child.push(c);
+  //     }
+  //   });
 
-    return c_child;
-  };
+  //   return c_child;
+  // };
 
   const validateCookie = useCallback(() => {
     setLoadUser(true);
@@ -107,17 +119,20 @@ export default function Comments({ postID }) {
 
     const form = new FormData(e.target);
 
+    const data = {
+      post: postID,
+      author_name: user.displayname,
+      author_email: user.email,
+      content: form.get("content"),
+    };
+
     axios
-      .get(
-        process.env.NEXT_PUBLIC_BASE_API +
-          `/api/user/post_comment/?cookie=${curCookie}&post_id=${postID}&content=${form.get(
-            "content"
-          )}&comment_status=1`
-      )
+      .post(process.env.NEXT_PUBLIC_API_URL + "/wp/v2/comments/create", data)
       .then((res) => {
-        console.log(res.data);
+        getComments();
+        document.getElementById("content").value = "";
       })
-      .catch((rrr) => {
+      .catch((err) => {
         throw err;
       });
   };
