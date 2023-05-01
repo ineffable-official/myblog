@@ -34,7 +34,7 @@ export default function Navbar() {
             return;
           }
 
-          if (res.data.valid && userID !== null && user === null) {
+          if (res.data.valid && userID !== null) {
             axios
               .get(
                 process.env.NEXT_PUBLIC_BASE_API +

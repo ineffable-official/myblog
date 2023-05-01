@@ -2,6 +2,7 @@ import MainLayout from "@/components/MainLayout";
 import Newsletter from "@/components/Newsletter";
 import PostCard from "@/components/PostCard";
 import axios from "axios";
+import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 
 export default function App() {
@@ -50,6 +51,9 @@ export default function App() {
 
   return (
     <MainLayout>
+      <Head>
+        <title>Nimetoon - Official website</title>
+      </Head>
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
         <div className="w-full h-auto col-span-12 md:col-span-9">
           {!loading1 ? (
@@ -84,7 +88,7 @@ export default function App() {
           </div>
         </div>
         <div className="w-full h-12 ml:col-span-3 lg:col-span-3 col-span-12">
-          <Newsletter/>
+          <Newsletter />
         </div>
       </div>
     </MainLayout>

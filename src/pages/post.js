@@ -6,7 +6,30 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
-function Single({ post }) {
+function Single() {
+  const [post, setPost] = useState([]);
+  const router = useRouter();
+
+  const getPost = useCallback(() => {
+    if (!router.query.s) {
+      return;
+    }
+    axios
+      .get(
+        process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts?slug=" + router.query.s
+      )
+      .then((res) => {
+        setPost(res.data);
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }, [router]);
+
+  useEffect(() => {
+    getPost();
+  }, [getPost]);
+
   return (
     <MainLayout>
       <div className="md:px-8 px-4 grid grid-cols-12 gap-8 pt-16 pb-32">
@@ -14,29 +37,11 @@ function Single({ post }) {
           {post ? post.map((p) => <Article post={p} key={p.id} />) : ""}
         </div>
         <div className="w-full h-12 md:col-span-3 col-span-12">
-          <Newsletter/>
+          <Newsletter />
         </div>
       </div>
     </MainLayout>
   );
-}
-
-export async function getStaticPaths() {
-  const res = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts");
-
-  const paths = res.data.map((post) => ({ params: { slug: post.slug } }));
-
-  return { paths, fallback: false };
-}
-
-export async function getStaticProps({ params }) {
-  const res = await axios(
-    process.env.NEXT_PUBLIC_API_URL + "/wp/v2/posts?slug=" + params.slug
-  );
-
-  const post = res.data;
-
-  return { props: { post } };
 }
 
 export default Single;

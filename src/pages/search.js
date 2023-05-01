@@ -2,6 +2,7 @@ import MainLayout from "@/components/MainLayout";
 import Newsletter from "@/components/Newsletter";
 import PostCard from "@/components/PostCard";
 import axios from "axios";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
@@ -37,6 +38,9 @@ export default function Search() {
   return (
     <MainLayout>
       <div className="px-8 grid grid-cols-12 gap-8 pt-16 pb-32">
+      <Head>
+        <title>Search: {router.query.q} -Nimetoon</title>
+      </Head>
         <div className="w-full h-auto md:col-span-9 col-span-12">
           <div className="grid md:grid-cols-3 gap-6 mt-8">
             {!loading ? (

@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import Head from "next/head";
 import Comments from "./Comments";
+import parse from 'html-react-parser';
 
 export default function Article({ post }) {
   const [thumb, setThumb] = useState([]);
@@ -53,6 +54,9 @@ export default function Article({ post }) {
 
   return (
     <div className="w-full h-auto">
+      <Head>
+        {parse(post.yoast_head)}
+      </Head>
       <div className="flex flex-wrap py-2 gap-2">
         {post.categories
           ? post.categories.map((c) => <Category category_id={c} key={c} />)

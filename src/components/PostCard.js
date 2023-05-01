@@ -90,7 +90,7 @@ export default function PostCard(props) {
               : ""}
           </div>
           <Link
-            href={"post/" + props.data.slug}
+            href={"post?s=" + props.data.slug}
             className="font-medium text-lg py-2"
             style={{
               fontSize: props.headPost ? "28px" : "",
