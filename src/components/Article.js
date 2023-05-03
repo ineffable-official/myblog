@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import Head from "next/head";
 import Comments from "./Comments";
-import parse from 'html-react-parser';
+import parse from "html-react-parser";
 
 export default function Article({ post }) {
   const [thumb, setThumb] = useState([]);
@@ -12,23 +12,23 @@ export default function Article({ post }) {
   const [author, setAuthor] = useState([]);
   const [authorLoading, setAuthorLoading] = useState(false);
 
-  const getThumb = useCallback(() => {
-    if (!post.featured_media) {
-      return;
-    }
-    setThumbLoading(true);
-    axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + "/wp/v2/media/" + post.featured_media
-      )
-      .then((res) => {
-        setThumb(res.data);
-        setThumbLoading(false);
-      })
-      .catch((err) => {
-        throw err;
-      });
-  }, [post]);
+  // const getThumb = useCallback(() => {
+  //   if (!post.featured_media) {
+  //     return;
+  //   }
+  //   setThumbLoading(true);
+  //   axios
+  //     .get(
+  //       process.env.NEXT_PUBLIC_API_URL + "/wp/v2/media/" + post.featured_media
+  //     )
+  //     .then((res) => {
+  //       setThumb(res.data);
+  //       setThumbLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       throw err;
+  //     });
+  // }, [post]);
 
   const getAuthor = useCallback(() => {
     setAuthorLoading(true);
@@ -48,15 +48,13 @@ export default function Article({ post }) {
   };
 
   useEffect(() => {
-    getThumb();
+    // getThumb();
     getAuthor();
-  }, [getThumb, getAuthor]);
+  }, [getAuthor]);
 
   return (
     <div className="w-full h-auto">
-      <Head>
-        {parse(post.yoast_head)}
-      </Head>
+      <Head>{parse(post.yoast_head)}</Head>
       <div className="flex flex-wrap py-2 gap-2">
         {post.categories
           ? post.categories.map((c) => <Category category_id={c} key={c} />)
@@ -140,7 +138,7 @@ export default function Article({ post }) {
           </div>
         </Link>
       </div>
-      {post.featured_media ? (
+      {/* {post.featured_media ? (
         <div className="h-[300px] my-4 rounded-xl overflow-hidden flex items-center justify-center">
           {thumbLoading ? (
             <div className="w-full h-[300px] bg-[rgba(0,0,0,0.1)] flex items-center justify-center">
@@ -160,7 +158,7 @@ export default function Article({ post }) {
         </div>
       ) : (
         ""
-      )}
+      )} */}
       <article
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
         className="leading-7 mt-8"

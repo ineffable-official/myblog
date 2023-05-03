@@ -103,7 +103,7 @@ export default function Login() {
             )}
           </button>
           <div className="w-full h-11 rounded-lg bg-[rgba(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.1)] text-black text-sm font-medium flex items-center justify-center">
-            <Link href="/auth/signup">SINGUP</Link>
+            <Link href="/auth/signup">SIGNUP</Link>
           </div>
         </form>
       </div>
